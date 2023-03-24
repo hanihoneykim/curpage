@@ -1,0 +1,15 @@
+<h1>{{title}}</h1>
+
+<ul>
+{% for text in texts %}
+    <li>
+        <a href="/texts/{{text.pk}}">
+            {{text.title}}
+        </a>
+        <br/>
+        {% for tag in text.tags.all %}
+            <span>{{tag.name}}<br/></span>
+        {% endfor %}
+    </li>
+{% endfor %}
+</ul>

@@ -1,0 +1,10 @@
+{% if not not_found %}
+    <h1>{{text.title}}</h1>
+    <h3>{{text.user}}</h3>
+    <h4>{{text.body}}</h4>
+    {% for tag in text.tags.all %}
+        <span>{{tag.name}}<br/></span>
+    {% endfor %}
+{% else %}
+    <h1>404 not found</h1>
+{% endif %}
