@@ -22,6 +22,7 @@ class Text(CommonModel):
     tags = models.ManyToManyField(
         "tags.Tag",
         blank=True,
+        default="",
         verbose_name="태그",
         related_name="texts",
     )
