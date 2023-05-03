@@ -1,12 +1,12 @@
 from rest_framework import serializers
 from .models import Text
-from tags.serializers import TagSerializer
+from tags.serializers import TagListSerializer
 from users.serializers import TinyUserSerializer
 
 
 class TextListSerializer(serializers.ModelSerializer):
     total_likes = serializers.SerializerMethodField()
-    tags = TagSerializer(many=True)
+    tags = TagListSerializer(many=True)
     user = TinyUserSerializer(read_only=True)
 
     class Meta:
@@ -25,7 +25,7 @@ class TextListSerializer(serializers.ModelSerializer):
 
 class TextDetailSerializer(serializers.ModelSerializer):
     total_likes = serializers.SerializerMethodField(read_only=True)
-    tags = TagSerializer(many=True, read_only=True)
+    tags = TagListSerializer(many=True, read_only=True)
     user = TinyUserSerializer(read_only=True)
 
     class Meta:

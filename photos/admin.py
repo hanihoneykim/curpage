@@ -7,7 +7,6 @@ class PhotoAdmin(admin.ModelAdmin):
     list_display = (
         "title",
         "user",
-        "photo_count",
     )
 
     search_fields = (

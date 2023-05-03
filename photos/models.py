@@ -34,6 +34,3 @@ class Photo(CommonModel):
 
     def __str__(self):
         return self.title
-
-    def photo_count(self):
-        return self.count()

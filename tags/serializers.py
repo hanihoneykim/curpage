@@ -2,7 +2,13 @@ from rest_framework import serializers
 from .models import Tag
 
 
-class TagSerializer(serializers.ModelSerializer):
+class TagListSerializer(serializers.ModelSerializer):
+    texts = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
+
     class Meta:
         model = Tag
-        fields = "__all__"
+        fields = (
+            "pk",
+            "name",
+            "texts",
+        )
