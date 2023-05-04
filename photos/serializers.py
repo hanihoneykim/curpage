@@ -15,7 +15,6 @@ class PhotoListSerializer(ModelSerializer):
             "pk",
             "photo",
             "title",
-            "description",
             "user",
             "tags",
         )
