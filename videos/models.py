@@ -11,7 +11,7 @@ class Video(CommonModel):
         default="",
         verbose_name="제목",
     )
-    video = models.FileField()
+    video = models.URLField()
     description = models.TextField(
         blank=True,
         verbose_name="내용",

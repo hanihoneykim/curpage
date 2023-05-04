@@ -12,3 +12,12 @@ class TagListSerializer(serializers.ModelSerializer):
             "name",
             "texts",
         )
+
+
+class TinyTagSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Tag
+        fields = (
+            "pk",
+            "name",
+        )

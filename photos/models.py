@@ -10,7 +10,7 @@ class Photo(CommonModel):
         default="",
         verbose_name="제목",
     )
-    photo = models.ImageField(
+    photo = models.URLField(
         null=True,
         default="",
         verbose_name="사진파일",
@@ -28,6 +28,7 @@ class Photo(CommonModel):
     tags = models.ManyToManyField(
         "tags.Tag",
         blank=True,
+        default="",
         verbose_name="태그",
         related_name="photos",
     )
