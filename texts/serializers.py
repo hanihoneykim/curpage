@@ -5,9 +5,10 @@ from users.serializers import TinyUserSerializer
 
 
 class TextListSerializer(serializers.ModelSerializer):
-    total_likes = serializers.SerializerMethodField()
+    total_likes = serializers.SerializerMethodField(read_only=True)
     tags = TinyTagSerializer(many=True, read_only=True)
     user = TinyUserSerializer(read_only=True)
+    comments_count = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = Text
@@ -17,16 +18,21 @@ class TextListSerializer(serializers.ModelSerializer):
             "user",
             "tags",
             "total_likes",
+            "comments_count",
         )
 
     def get_total_likes(self, text):
         return text.total_likes()
+
+    def comments_count(self, text):
+        return text.comments_count()
 
 
 class TextDetailSerializer(serializers.ModelSerializer):
     total_likes = serializers.SerializerMethodField(read_only=True)
     tags = TinyTagSerializer(many=True, read_only=True)
     user = TinyUserSerializer(read_only=True)
+    comments_count = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = Text
@@ -34,3 +40,6 @@ class TextDetailSerializer(serializers.ModelSerializer):
 
     def get_total_likes(self, text):
         return text.total_likes()
+
+    def comments_count(self, text):
+        return text.comments_count()

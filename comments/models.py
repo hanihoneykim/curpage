@@ -1,3 +1,4 @@
+from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from common.models import CommonModel
 
@@ -12,24 +13,28 @@ class Comment(CommonModel):
     user = models.ForeignKey(
         "users.User",
         on_delete=models.CASCADE,
+        related_name="comments",
     )
     text = models.ForeignKey(
         "texts.Text",
         on_delete=models.CASCADE,
         null=True,
         blank=True,
+        related_name="comments",
     )
     photo = models.ForeignKey(
         "photos.Photo",
         on_delete=models.CASCADE,
         null=True,
         blank=True,
+        related_name="comments",
     )
     video = models.ForeignKey(
         "videos.Video",
         on_delete=models.CASCADE,
         null=True,
         blank=True,
+        related_name="comments",
     )
 
     def __str__(self):
@@ -40,6 +45,7 @@ class Like(models.Model):
 
     """Like Model Definition"""
 
+    like = models.BooleanField(default=False)
     user = models.ForeignKey(
         "users.User",
         on_delete=models.CASCADE,
@@ -47,20 +53,6 @@ class Like(models.Model):
     )
     text = models.ForeignKey(
         "texts.Text",
-        on_delete=models.CASCADE,
-        related_name="likes",
-        blank=True,
-        null=True,
-    )
-    photo = models.ForeignKey(
-        "photos.Photo",
-        on_delete=models.CASCADE,
-        related_name="likes",
-        blank=True,
-        null=True,
-    )
-    video = models.ForeignKey(
-        "videos.Video",
         on_delete=models.CASCADE,
         related_name="likes",
         blank=True,

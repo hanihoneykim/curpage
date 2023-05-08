@@ -15,16 +15,6 @@ class CommentAdmin(admin.ModelAdmin):
 
 @admin.register(Like)
 class LikeAdmin(admin.ModelAdmin):
-    list_display = (
-        "__str__",
-        "text",
-        "photo",
-        "video",
-    )
+    list_display = ("__str__",)
 
-    search_fields = (
-        "=user__username",
-        "photo__title__icontains",
-        "text__title__icontains",
-        "video__title__icontains",
-    )
+    search_fields = ("=user__username",)

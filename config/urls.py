@@ -23,4 +23,6 @@ urlpatterns = [
     path("api/v1/texts/", include("texts.urls")),
     path("api/v1/tags/", include("tags.urls")),
     path("api/v1/photos/", include("photos.urls")),
+    path("api/v1/videos/", include("videos.urls")),
+    path("api/v1/comments/", include("comments.urls")),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

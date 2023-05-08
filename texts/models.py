@@ -1,5 +1,7 @@
+from django.contrib.contenttypes.fields import GenericRelation
 from django.db import models
 from common.models import CommonModel
+from comments.models import Like
 
 
 class Text(CommonModel):
@@ -30,5 +32,8 @@ class Text(CommonModel):
     def __str__(text):
         return text.title
 
-    def total_likes(text):
-        return text.likes.count()
+    def total_likes(self):
+        return self.likes.filter(like=True).count()
+
+    def comments_count(text):
+        return text.comments.count()

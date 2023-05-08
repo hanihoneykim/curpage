@@ -6,7 +6,9 @@ from rest_framework.status import HTTP_204_NO_CONTENT, HTTP_400_BAD_REQUEST
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 from .models import Text
 from tags.models import Tag
+from comments.models import Comment
 from .serializers import TextListSerializer, TextDetailSerializer
+from comments.serializers import CommentSerializer
 
 
 class Texts(APIView):
@@ -99,3 +101,31 @@ class TextDetail(APIView):
             raise PermissionDenied
         text.delete()
         return Response(status=HTTP_204_NO_CONTENT)
+
+
+class TextComments(APIView):
+    permission_classes = [IsAuthenticatedOrReadOnly]
+
+    def get_object(self, pk):
+        try:
+            return Text.objects.get(pk=pk)
+        except Text.DoesNotExist:
+            raise NotFound
+
+    def get(self, request, pk):
+        text = self.get_object(pk)
+        serializer = CommentSerializer(
+            text.comments.all(),
+            many=True,
+        )
+        return Response(serializer.data)
+
+    def post(self, request, pk):
+        serializer = CommentSerializer(data=request.data)
+        if serializer.is_valid():
+            comment = serializer.save(
+                user=request.user,
+                text=self.get_object(pk),
+            )
+            serializer = CommentSerializer(comment)
+            return Response(serializer.data)

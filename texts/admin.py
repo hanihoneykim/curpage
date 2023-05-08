@@ -9,7 +9,6 @@ class TextAdmin(admin.ModelAdmin):
         "title",
         "user",
         "body",
-        "total_likes",
     )
 
     list_filter = [
