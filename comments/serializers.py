@@ -1,6 +1,7 @@
 from rest_framework import serializers
+from rest_framework import generics
 from users.serializers import TinyUserSerializer
-from .models import Comment
+from .models import Comment, Like
 from texts.models import Text
 
 
@@ -16,3 +17,11 @@ class CommentSerializer(serializers.ModelSerializer):
             "user",
             "text",
         )
+
+
+class LikeSerializer(serializers.ModelSerializer):
+    user = TinyUserSerializer(read_only=True)
+
+    class Meta:
+        model = Like
+        fields = ("user",)

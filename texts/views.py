@@ -2,13 +2,13 @@ from django.db import transaction
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.exceptions import NotFound, NotAuthenticated, ParseError, PermissionDenied
-from rest_framework.status import HTTP_204_NO_CONTENT, HTTP_400_BAD_REQUEST
+from rest_framework.status import HTTP_204_NO_CONTENT, HTTP_400_BAD_REQUEST, HTTP_404_NOT_FOUND
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 from .models import Text
 from tags.models import Tag
-from comments.models import Comment
+from comments.models import Comment, Like
 from .serializers import TextListSerializer, TextDetailSerializer
-from comments.serializers import CommentSerializer
+from comments.serializers import CommentSerializer, LikeSerializer
 
 
 class Texts(APIView):
@@ -129,3 +129,54 @@ class TextComments(APIView):
             )
             serializer = CommentSerializer(comment)
             return Response(serializer.data)
+
+
+class CommentDetail(APIView):
+    def get(self, request, text_pk, comment_pk):
+        text = Text.objects.get(pk=text_pk)
+        comment = Comment.objects.get(pk=comment_pk, text=text)
+        serializer = CommentSerializer(comment)
+        return Response(serializer.data)
+
+    def delete(self, request, text_pk, comment_pk):
+        text = Text.objects.get(pk=text_pk)
+        comment = Comment.objects.get(pk=comment_pk, text=text)
+        comment.delete()
+        return Response(status=HTTP_204_NO_CONTENT)
+
+
+class TextLikes(APIView):
+    def get_object(self, pk):
+        try:
+            return Text.objects.get(pk=pk)
+        except Text.DoesNotExist:
+            raise NotFound
+
+    def get(self, request, pk):
+        text = self.get_object(pk)
+        likes = text.likes.filter(like=True)
+        serializer = LikeSerializer(
+            likes,
+            many=True,
+        )
+        return Response(serializer.data)
+
+    def post(self, request, pk):
+        text = self.get_object(pk)
+        serializer = LikeSerializer(data=request.data)
+        if serializer.is_valid():
+            like = serializer.save(
+                like=True,
+                user=request.user,
+                text=text,
+            )
+            serializer = LikeSerializer(like)
+            return Response(serializer.data)
+        else:
+            return Response(serializer.errors)
+
+    def delete(self, request, pk):
+        text = self.get_object(pk)
+        like = text.likes.filter(user=request.user).first()
+        like.delete()
+        return Response(status=HTTP_204_NO_CONTENT)
