@@ -38,7 +38,16 @@ class User(AbstractUser):
         verbose_name="이메일",
     )
     gender = models.CharField(
-        max_length=10, choices=GenderChoices.choices, default="", verbose_name="성별"
+        max_length=10,
+        choices=GenderChoices.choices,
+        default="",
+        verbose_name="성별",
     )
 
-    date_joined = models.DateTimeField(default=timezone.now)
+    date_joined = models.DateTimeField(
+        default=timezone.now,
+    )
+    dmrooms = models.ManyToManyField(
+        "dms.DmRoom",
+        related_name="user_dmrooms",
+    )

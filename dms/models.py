@@ -9,7 +9,7 @@ class Dm(CommonModel):
     message = models.TextField(
         verbose_name="메세지",
     )
-    user = models.ForeignKey(
+    member = models.ForeignKey(
         "users.User",
         blank=True,
         null=True,
@@ -23,7 +23,7 @@ class Dm(CommonModel):
     )
 
     def __str__(self):
-        return f"{self.user} says : {self.message}"
+        return f"{self.member} says : {self.message}"
 
     class Meta:
         verbose_name = "Direct Message"
@@ -33,10 +33,24 @@ class DmRoom(CommonModel):
 
     """Direct Message Room Model Definition"""
 
-    users = models.ManyToManyField("users.User")
+    title = models.CharField(
+        max_length=15,
+        default="",
+    )
+    host = models.ForeignKey(
+        "users.User",
+        blank=True,
+        null=True,
+        on_delete=models.CASCADE,
+        related_name="hosted_dmrooms",
+    )
+    members = models.ManyToManyField(
+        "users.User",
+        related_name="joined_dmrooms",
+    )
 
     def __str__(self):
-        return "DmRoom"
+        return f"DmRoom : {self.title}"
 
     class Meta:
         verbose_name = "Chatting Room"
