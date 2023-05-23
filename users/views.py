@@ -55,7 +55,10 @@ class PublicUser(APIView):
             user = User.objects.get(username=username)
         except User.DoesNotExist:
             raise NotFound
-        serializer = PublicUserSerializer(user)
+        serializer = PublicUserSerializer(
+            user,
+            context={"request": request},
+        )
         return Response(serializer.data)
 
 

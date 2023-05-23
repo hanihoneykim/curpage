@@ -9,6 +9,9 @@ class TinyUserSerializer(serializers.ModelSerializer):
 
 
 class PrivateUserSerializer(serializers.ModelSerializer):
+    following = serializers.SerializerMethodField(read_only=True)
+    followers = serializers.SerializerMethodField(read_only=True)
+
     class Meta:
         model = User
         exclude = (
@@ -24,11 +27,22 @@ class PrivateUserSerializer(serializers.ModelSerializer):
             "dmrooms",
         )
 
+    def get_following(self, user):
+        following_users = user.following.all()
+        return [following.username for following in following_users]
+
+    def get_followers(self, user):
+        followers_users = user.followers.all()
+        return [follower.username for follower in followers_users]
+
 
 class PublicUserSerializer(serializers.ModelSerializer):
     total_texts = serializers.SerializerMethodField(read_only=True)
     total_photos = serializers.SerializerMethodField(read_only=True)
     total_videos = serializers.SerializerMethodField(read_only=True)
+    following = serializers.SerializerMethodField(read_only=True)
+    followers = serializers.SerializerMethodField(read_only=True)
+    is_following = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = User
@@ -39,6 +53,9 @@ class PublicUserSerializer(serializers.ModelSerializer):
             "total_texts",
             "total_photos",
             "total_videos",
+            "following",
+            "followers",
+            "is_following",
         )
 
     def get_total_texts(self, user):
@@ -49,3 +66,17 @@ class PublicUserSerializer(serializers.ModelSerializer):
 
     def get_total_videos(self, user):
         return user.videos.count()
+
+    def get_following(self, user):
+        following_users = user.following.all()
+        return [following.username for following in following_users]
+
+    def get_followers(self, user):
+        followers_users = user.followers.all()
+        return [follower.username for follower in followers_users]
+
+    def get_is_following(self, user):
+        request = self.context.get("request")
+        if request and request.user.is_authenticated:
+            return user.followers.filter(id=request.user.id).exists()
+        return False

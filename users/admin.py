@@ -9,7 +9,15 @@ class CustomUserAdmin(UserAdmin):
         (
             "Prifile",
             {
-                "fields": ("profile_photo", "username", "password", "email", "name", "gender"),
+                "fields": (
+                    "profile_photo",
+                    "username",
+                    "password",
+                    "email",
+                    "name",
+                    "gender",
+                    "following",
+                ),
                 "classes": ("wide",),
             },
         ),

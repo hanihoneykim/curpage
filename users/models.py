@@ -51,3 +51,7 @@ class User(AbstractUser):
         "dms.DmRoom",
         related_name="user_dmrooms",
     )
+    following = models.ManyToManyField(
+        "users.User",
+        related_name="followers",
+    )
