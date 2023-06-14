@@ -27,6 +27,7 @@ class Dm(CommonModel):
 
     class Meta:
         verbose_name = "Direct Message"
+        ordering = ["-created_at"]
 
 
 class DmRoom(CommonModel):
@@ -54,3 +55,4 @@ class DmRoom(CommonModel):
 
     class Meta:
         verbose_name = "Chatting Room"
+        ordering = ["-created_at"]

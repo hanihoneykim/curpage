@@ -29,5 +29,8 @@ class Video(CommonModel):
         related_name="videos",
     )
 
+    class Meta:
+        ordering = ["-created_at"]
+
     def __str__(self):
         return self.title

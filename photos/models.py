@@ -33,5 +33,8 @@ class Photo(CommonModel):
         related_name="photos",
     )
 
+    class Meta:
+        ordering = ["-created_at"]
+
     def __str__(self):
         return self.title

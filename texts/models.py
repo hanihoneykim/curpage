@@ -29,6 +29,9 @@ class Text(CommonModel):
         related_name="texts",
     )
 
+    class Meta:
+        ordering = ["-created_at"]
+
     def __str__(text):
         return text.title
 

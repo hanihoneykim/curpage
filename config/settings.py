@@ -32,6 +32,7 @@ ALLOWED_HOSTS = []
 
 THIRD_PARTY_APPS = [
     "rest_framework",
+    "corsheaders",
 ]
 
 CUSTOM_APPS = [
@@ -65,6 +66,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
 ]
 
 ROOT_URLCONF = "config.urls"
@@ -144,3 +146,5 @@ AUTH_USER_MODEL = "users.User"
 MEDIA_ROOT = "uploads"
 
 MEDIA_URL = "user-uploads/"
+
+CORS_ALLOWED_ORIGINS = ["http://localhost:3000"]
