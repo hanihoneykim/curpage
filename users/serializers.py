@@ -8,6 +8,15 @@ class TinyUserSerializer(serializers.ModelSerializer):
         fields = ("name",)
 
 
+class UserProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = (
+            "name",
+            "profile_photo",
+        )
+
+
 class PrivateUserSerializer(serializers.ModelSerializer):
     following = serializers.SerializerMethodField(read_only=True)
     followers = serializers.SerializerMethodField(read_only=True)

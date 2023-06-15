@@ -19,6 +19,17 @@ class CommentSerializer(serializers.ModelSerializer):
         )
 
 
+class TinyCommentSerializer(serializers.ModelSerializer):
+    user = TinyUserSerializer(read_only=True)
+
+    class Meta:
+        model = Comment
+        fields = (
+            "comment",
+            "user",
+        )
+
+
 class LikeSerializer(serializers.ModelSerializer):
     user = TinyUserSerializer(read_only=True)
 

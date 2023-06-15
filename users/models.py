@@ -18,7 +18,6 @@ class User(AbstractUser):
     )
     profile_photo = models.URLField(
         null=True,
-        default="",
         verbose_name="프로필 사진",
     )
     name = models.CharField(
