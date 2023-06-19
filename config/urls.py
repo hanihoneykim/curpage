@@ -20,6 +20,7 @@ from django.conf import settings
 
 urlpatterns = [
     path("admin/", admin.site.urls),
+    path("", include("homepage.urls")),
     path("api/v1/texts/", include("texts.urls")),
     path("api/v1/tags/", include("tags.urls")),
     path("api/v1/photos/", include("photos.urls")),

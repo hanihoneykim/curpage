@@ -29,3 +29,9 @@ class PhotoDetailSerializer(ModelSerializer):
     class Meta:
         model = Photo
         fields = "__all__"
+
+
+class TinyPhotoSerializer(ModelSerializer):
+    class Meta:
+        model = Photo
+        fields = ("pk", "photo")

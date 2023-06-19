@@ -26,3 +26,13 @@ class VideoDetailSerializer(ModelSerializer):
     class Meta:
         model = Video
         fields = "__all__"
+
+
+class TinyVideoSerializer(ModelSerializer):
+    class Meta:
+        model = Video
+        fields = (
+            "pk",
+            "title",
+            "video",
+        )

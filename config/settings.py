@@ -44,6 +44,7 @@ CUSTOM_APPS = [
     "videos.apps.VideosConfig",
     "dms.apps.DmsConfig",
     "comments.apps.CommentsConfig",
+    "homepage.apps.HomepageConfig",
 ]
 
 SYSTEM_APPS = [

@@ -45,3 +45,15 @@ class TextDetailSerializer(serializers.ModelSerializer):
 
     def comments_count(self, text):
         return text.comments_count()
+
+
+class TinyTextSerializer(serializers.ModelSerializer):
+    user = TinyUserSerializer(read_only=True)
+
+    class Meta:
+        model = Text
+        fields = (
+            "pk",
+            "title",
+            "user",
+        )
