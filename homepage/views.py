@@ -13,8 +13,8 @@ class Home(APIView):
     permission_classes = [IsAuthenticatedOrReadOnly]
 
     def get(self, request):
-        latest_photos = Photo.objects.order_by("-created_at")[:12]
-        latest_texts = Text.objects.order_by("-created_at")[:7]
+        latest_photos = Photo.objects.order_by("-created_at")[:14]
+        latest_texts = Text.objects.order_by("-created_at")[:10]
         latest_videos = Video.objects.order_by("-created_at")[:7]
         serializer = HomeSerializer(
             {

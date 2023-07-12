@@ -8,7 +8,6 @@ class TextAdmin(admin.ModelAdmin):
     list_display = (
         "title",
         "user",
-        "body",
     )
 
     list_filter = [

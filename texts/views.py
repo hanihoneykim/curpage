@@ -21,6 +21,9 @@ class Texts(APIView):
             many=True,
             context={"request": request},
         )
+        for text in serializer.data:
+            text["body"] = text["body"][:30]
+
         return Response(serializer.data)
 
     def post(self, request):

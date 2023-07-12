@@ -1,14 +1,14 @@
 from rest_framework import serializers
 from .models import Text
 from tags.serializers import TinyTagSerializer
-from users.serializers import TinyUserSerializer
+from users.serializers import TinyUserSerializer, UserProfileSerializer
 from comments.serializers import CommentSerializer
 
 
 class TextListSerializer(serializers.ModelSerializer):
     total_likes = serializers.SerializerMethodField(read_only=True)
     tags = TinyTagSerializer(many=True, read_only=True)
-    user = TinyUserSerializer(read_only=True)
+    user = UserProfileSerializer(read_only=True)
     comments_count = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
@@ -16,6 +16,7 @@ class TextListSerializer(serializers.ModelSerializer):
         fields = (
             "pk",
             "title",
+            "body",
             "user",
             "tags",
             "total_likes",
@@ -32,7 +33,7 @@ class TextListSerializer(serializers.ModelSerializer):
 class TextDetailSerializer(serializers.ModelSerializer):
     total_likes = serializers.SerializerMethodField(read_only=True)
     tags = TinyTagSerializer(many=True, read_only=True)
-    user = TinyUserSerializer(read_only=True)
+    user = UserProfileSerializer(read_only=True)
     comments_count = serializers.SerializerMethodField(read_only=True)
     comments = CommentSerializer(many=True, read_only=True)
 
@@ -48,7 +49,7 @@ class TextDetailSerializer(serializers.ModelSerializer):
 
 
 class TinyTextSerializer(serializers.ModelSerializer):
-    user = TinyUserSerializer(read_only=True)
+    user = UserProfileSerializer(read_only=True)
 
     class Meta:
         model = Text
