@@ -1,4 +1,5 @@
 from django.contrib.auth import authenticate, login, logout
+from django.conf import settings
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status
@@ -6,6 +7,7 @@ from rest_framework.exceptions import ParseError, NotFound
 from rest_framework.permissions import IsAuthenticated
 from .serializers import PrivateUserSerializer, PublicUserSerializer, TinyUserSerializer
 from .models import User
+import requests
 
 
 class Me(APIView):
@@ -103,3 +105,21 @@ class LogOut(APIView):
     def post(self, request):
         logout(request)
         return Response({"OK": "BYE"})
+
+
+class GithubLogIn(APIView):
+    def post(self, request):
+        code = request.data.get("code")
+        access_token = requests.post(
+            f"https://github.com/login/oauth/access_token?code={code}&client_id=1c83ba0e1bb2869d2f4c&client_secret={settings.GH_SECRET}",
+            headers={"Accept": "application/json"},
+        )
+        access_token = access_token.json().get("access_token")
+        user_data = requests.get(
+            "https://api.github.com/user",
+            headers={
+                "Authorization": f"Bearer {access_token}",
+                "Accept": "application/json",
+            },
+        )
+        print(user_data.json())
