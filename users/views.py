@@ -15,19 +15,19 @@ class Me(APIView):
 
     def get(self, request):
         user = request.user
-        serilaizer = PrivateUserSerializer(user)
+        serilaizer = PublicUserSerializer(user)
         return Response(serilaizer.data)
 
     def put(self, request):
         user = request.user
-        serializer = PrivateUserSerializer(
+        serializer = PublicUserSerializer(
             user,
             data=request.data,
             partial=True,
         )
         if serializer.is_valid():
             user = serializer.save()
-            serializer = PrivateUserSerializer(user)
+            serializer = PublicUserSerializer(user)
             return Response(serializer.data)
         else:
             return Response(serializer.errors)
