@@ -125,3 +125,13 @@ class PublicUserSerializer(serializers.ModelSerializer):
 
     def get_count_followers(self, user):
         return user.following.count()
+
+
+class signUpUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = (
+            "username",
+            "email",
+            "name",
+        )
