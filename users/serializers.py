@@ -77,14 +77,21 @@ class PublicUserSerializer(serializers.ModelSerializer):
 
     def get_total_texts(self, user):
         users_texts = user.texts.all()
-        return [text.title for text in users_texts]
+        return [
+            {
+                "title": text.title,
+                "pk": text.pk,
+                # 다른 원하는 속성들도 추가할 수 있음
+            }
+            for text in users_texts
+        ]
 
     def get_total_photos(self, user):
         users_photos = user.photos.all()
         return [
             {
-                "title": photo.title,
                 "image_url": photo.photo,  # 예시로 image_url을 가져오는 방법
+                "pk": photo.pk,
                 # 다른 원하는 속성들도 추가할 수 있음
             }
             for photo in users_photos

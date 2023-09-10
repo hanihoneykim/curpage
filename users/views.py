@@ -33,6 +33,24 @@ class Me(APIView):
             return Response(serializer.errors)
 
 
+class MyPhotos(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        user = request.user
+        serilaizer = PublicUserSerializer(user)
+        return Response(serilaizer.data)
+
+
+class MyTexts(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        user = request.user
+        serilaizer = PublicUserSerializer(user)
+        return Response(serilaizer.data)
+
+
 class Users(APIView):
     def post(self, request):
         password = request.data.get("password")
