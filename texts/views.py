@@ -29,21 +29,22 @@ class Texts(APIView):
     def post(self, request):
         serializer = TextDetailSerializer(data=request.data)
         if serializer.is_valid():
-            tags = request.data.get("tags")
-            tag_list = []
-            for tag in tags:
-                if not tag:
+            tags_str = request.data.get("tags")
+            tag_list = [tag.strip() for tag in tags_str.split(",")]
+            tag_objects = []
+            for tag_name in tag_list:
+                if not tag_name:
                     continue
-                tag_obj, created = Tag.objects.get_or_create(name=tag)
+                tag_obj, created = Tag.objects.get_or_create(name=tag_name)
                 if created:
-                    tag_list.append(tag_obj)
+                    tag_objects.append(tag_obj)
                 else:
-                    tag_list.append(tag_obj)
+                    tag_objects.append(tag_obj)
 
             text = serializer.save(
                 user=request.user,
-                tags=tag_list,
             )
+            text.tags.set(tag_objects)
             serializer = TextDetailSerializer(text)
             return Response(serializer.data)
         else:
@@ -77,22 +78,23 @@ class TextDetail(APIView):
             partial=True,
         )
         if serializer.is_valid():
-            tags = request.data.get("tags")
-            tag_list = []
-            for tag in tags:
-                if not tag:
+            tags_str = request.data.get("tags")
+            tag_list = [tag.strip() for tag in tags_str.split(",")]
+            tag_objects = []
+            for tag_name in tag_list:
+                if not tag_name:
                     continue
-                elif tag:
-                    text.tags.clear()
-                    tag_obj, created = Tag.objects.get_or_create(name=tag)
-                    if created:
-                        tag_list.append(tag_obj)
-                    else:
-                        tag_list.append(tag_obj)
+                # 기존 태그를 모두 삭제합니다.
+                text.tags.clear()
+                tag_obj, created = Tag.objects.get_or_create(name=tag_name)
+                if created:
+                    tag_objects.append(tag_obj)
+                else:
+                    tag_objects.append(tag_obj)
             text = serializer.save(
                 user=request.user,
-                tags=tag_list,
             )
+            text.tags.set(tag_objects)
             serializer = TextDetailSerializer(text)
             return Response(serializer.data)
         else:

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Comment, Like
+from .models import Comment, Like, Bookmark
 
 
 @admin.register(Comment)
@@ -15,6 +15,21 @@ class CommentAdmin(admin.ModelAdmin):
 
 @admin.register(Like)
 class LikeAdmin(admin.ModelAdmin):
-    list_display = ("__str__",)
+    list_display = (
+        "__str__",
+        "text",
+        "photo",
+    )
+
+    search_fields = ("=user__username",)
+
+
+@admin.register(Bookmark)
+class BookmarkAdmin(admin.ModelAdmin):
+    list_display = (
+        "__str__",
+        "text",
+        "photo",
+    )
 
     search_fields = ("=user__username",)

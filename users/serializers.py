@@ -8,6 +8,15 @@ class TinyUserSerializer(serializers.ModelSerializer):
         fields = ("name",)
 
 
+class LikeUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = (
+            "pk",
+            "name",
+        )
+
+
 class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
@@ -135,3 +144,73 @@ class signUpUserSerializer(serializers.ModelSerializer):
             "email",
             "name",
         )
+
+
+class MyLikesSerializer(serializers.ModelSerializer):
+    likes_photos = serializers.SerializerMethodField(read_only=True)
+    likes_texts = serializers.SerializerMethodField(read_only=True)
+
+    class Meta:
+        model = User
+        fields = ("likes_photos", "likes_texts")
+
+    def get_likes_photos(self, user):
+        likes = user.likes.filter(photo__isnull=False)
+        serialized_likes = []
+
+        for like in likes:
+            serialized_like = {
+                "photo_pk": like.photo.id if like.photo else None,
+                "photo_url": like.photo.photo if like.photo else None,
+            }
+            serialized_likes.append(serialized_like)
+
+        return serialized_likes
+
+    def get_likes_texts(self, user):
+        likes = user.likes.filter(text__isnull=False)
+        serialized_likes = []
+
+        for like in likes:
+            serialized_like = {
+                "text_pk": like.text.id if like.text else None,
+                "text_title": like.text.title if like.text else None,
+            }
+            serialized_likes.append(serialized_like)
+
+        return serialized_likes
+
+
+class MyBookmarksSerializer(serializers.ModelSerializer):
+    bookmarks_photos = serializers.SerializerMethodField(read_only=True)
+    bookmarks_texts = serializers.SerializerMethodField(read_only=True)
+
+    class Meta:
+        model = User
+        fields = ("bookmarks_photos", "bookmarks_texts")
+
+    def get_bookmarks_photos(self, user):
+        bookmarks = user.bookmarks.filter(photo__isnull=False)
+        serialized_bookmarks = []
+
+        for bookmark in bookmarks:
+            serialized_bookmark = {
+                "photo_pk": bookmark.photo.id if bookmark.photo else None,
+                "photo_url": bookmark.photo.photo if bookmark.photo else None,
+            }
+            serialized_bookmarks.append(serialized_bookmark)
+
+        return serialized_bookmarks
+
+    def get_bookmarks_texts(self, user):
+        bookmarks = user.bookmarks.filter(text__isnull=False)
+        serialized_bookmarks = []
+
+        for bookmark in bookmarks:
+            serialized_bookmark = {
+                "text_pk": bookmark.text.id if bookmark.text else None,
+                "text_title": bookmark.text.title if bookmark.text else None,
+            }
+            serialized_bookmarks.append(serialized_bookmark)
+
+        return serialized_bookmarks

@@ -5,7 +5,12 @@ from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework.exceptions import ParseError, NotFound
 from rest_framework.permissions import IsAuthenticated
-from .serializers import PrivateUserSerializer, PublicUserSerializer, TinyUserSerializer
+from .serializers import (
+    PrivateUserSerializer,
+    PublicUserSerializer,
+    MyLikesSerializer,
+    MyBookmarksSerializer,
+)
 from .models import User
 import requests
 
@@ -250,3 +255,21 @@ class SignUp(APIView):
                 serializer.errors,
                 status=status.HTTP_400_BAD_REQUEST,
             )
+
+
+class MyLikes(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        user = request.user
+        serilaizer = MyLikesSerializer(user)
+        return Response(serilaizer.data)
+
+
+class MyBookmarks(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        user = request.user
+        serilaizer = MyBookmarksSerializer(user)
+        return Response(serilaizer.data)

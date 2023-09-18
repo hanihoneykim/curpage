@@ -2,10 +2,13 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from .models import Photo
 from tags.models import Tag
+from comments.models import Like
+from comments.serializers import LikeSerializer
 from .serializers import PhotoListSerializer, PhotoDetailSerializer
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 from rest_framework.status import HTTP_204_NO_CONTENT, HTTP_400_BAD_REQUEST
 from rest_framework.exceptions import NotFound, NotAuthenticated, ParseError, PermissionDenied
+from rest_framework.generics import RetrieveAPIView
 
 
 class PhotoList(APIView):
@@ -23,21 +26,22 @@ class PhotoList(APIView):
     def post(self, request):
         serializer = PhotoListSerializer(data=request.data)
         if serializer.is_valid():
-            tags = request.data.get("tags")
-            tag_list = []
-            for tag in tags:
-                if not tag:
+            tags_str = request.data.get("tags")
+            tag_list = [tag.strip() for tag in tags_str.split(",")]
+            tag_objects = []
+            for tag_name in tag_list:
+                if not tag_name:
                     continue
-                tag_obj, created = Tag.objects.get_or_create(name=tag)
+                tag_obj, created = Tag.objects.get_or_create(name=tag_name)
                 if created:
-                    tag_list.append(tag_obj)
+                    tag_objects.append(tag_obj)
                 else:
-                    tag_list.append(tag_obj)
+                    tag_objects.append(tag_obj)
 
             photo = serializer.save(
                 user=request.user,
-                tags=tag_list,
             )
+            photo.tags.set(tag_objects)
             serializer = PhotoListSerializer(photo)
             return Response(serializer.data)
         else:
@@ -57,6 +61,7 @@ class PhotoDetail(APIView):
         photo = self.get_object(pk)
         serializer = PhotoDetailSerializer(
             photo,
+            context={"request": request},
         )
         return Response(serializer.data)
 
@@ -68,24 +73,26 @@ class PhotoDetail(APIView):
             photo,
             data=request.data,
             partial=True,
+            context={"request": request},
         )
         if serializer.is_valid():
-            tags = request.data.get("tags")
-            tag_list = []
-            for tag in tags:
-                if not tag:
+            tags_str = request.data.get("tags")
+            tag_list = [tag.strip() for tag in tags_str.split(",")]
+            tag_objects = []
+            for tag_name in tag_list:
+                if not tag_name:
                     continue
-                elif tag:
-                    photo.tags.clear()
-                    tag_obj, created = Tag.objects.get_or_create(name=tag)
-                    if created:
-                        tag_list.append(tag_obj)
-                    else:
-                        tag_list.append(tag_obj)
+                # 기존 태그를 모두 삭제합니다.
+                photo.tags.clear()
+                tag_obj, created = Tag.objects.get_or_create(name=tag_name)
+                if created:
+                    tag_objects.append(tag_obj)
+                else:
+                    tag_objects.append(tag_obj)
             photo = serializer.save(
                 user=request.user,
-                tags=tag_list,
             )
+            photo.tags.set(tag_objects)
             serializer = PhotoDetailSerializer(photo)
             return Response(serializer.data)
         else:
@@ -97,3 +104,64 @@ class PhotoDetail(APIView):
             raise PermissionDenied
         photo.delete()
         return Response(status=HTTP_204_NO_CONTENT)
+
+
+class PhotoLikes(APIView):
+    def get_object(self, pk):
+        try:
+            return Photo.objects.get(pk=pk)
+        except Photo.DoesNotExist:
+            raise NotFound
+
+    def get(self, request, pk):
+        photo = self.get_object(pk)
+        likes = photo.likes.filter(like=True)
+        serializer = LikeSerializer(
+            likes,
+            many=True,
+            context={"request": request},
+        )
+        return Response(serializer.data)
+
+    def post(self, request, pk):
+        photo = self.get_object(pk)
+        like, created = Like.objects.get_or_create(
+            user=request.user,
+            photo=photo,
+            defaults={"like": True},
+        )
+        if not created:
+            # 이미 좋아요를 누른 경우
+            return Response({"detail": "이미 좋아요를 눌렀습니다."}, status=HTTP_400_BAD_REQUEST)
+
+        # 서버 응답에 업데이트된 좋아요 카운트와 is_like 값을 포함
+        serializer = LikeSerializer(like)
+        return Response(
+            {
+                "count_likes": photo.likes.filter(like=True).count(),
+                "is_like": True,
+                # 기타 필요한 데이터도 반환할 수 있음
+            }
+        )
+
+    def delete(self, request, pk):
+        photo = self.get_object(pk)
+        like = photo.likes.filter(user=request.user).first()
+        if like:
+            # 사용자 객체간의 동등성을 확인하여 좋아요 삭제
+            if like.user == request.user:
+                like.delete()
+                # 서버 응답에 업데이트된 좋아요 카운트와 is_like 값을 포함
+                return Response(
+                    {
+                        "count_likes": photo.likes.filter(like=True).count(),
+                        "is_like": False,
+                        # 기타 필요한 데이터도 반환할 수 있음
+                    }
+                )
+            else:
+                # 현재 사용자와 좋아요를 누른 사용자가 다른 경우
+                return Response({"detail": "삭제 권한이 없습니다."}, status=status.HTTP_403_FORBIDDEN)
+        else:
+            # 이미 좋아요가 취소된 경우
+            return Response({"detail": "이미 좋아요를 취소했습니다."}, status=status.HTTP_400_BAD_REQUEST)
