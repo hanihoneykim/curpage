@@ -1,0 +1,22 @@
+databases:
+  - name: curpage
+    databaseName: curpage
+    user: curpage
+    region: singapore
+
+services:
+  - type: web
+    name: curpage
+    runtime: python
+    region: singapore
+    buildCommand: "./build.sh"
+    startCommand: "gunicorn mysite.wsgi:application"
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: curpage
+          property: connectionString
+      - key: SECRET_KEY
+        generateValue: true
+      - key: WEB_CONCURRENCY
+        value: 4
