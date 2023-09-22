@@ -346,6 +346,8 @@ files = [
 ]
 
 [package.extras]
+develop = ["coverage[toml] (>=5.0a4)", "furo (>=2021.8.17b43,<2021.9.dev0)", "pytest (>=4.6.11)", "sphinx (>=3.5.0)", "sphinx-notfound-page"]
+docs = ["furo (>=2021.8.17b43,<2021.9.dev0)", "sphinx (>=3.5.0)", "sphinx-notfound-page"]
 testing = ["coverage[toml] (>=5.0a4)", "pytest (>=4.6.11)"]
 
 [[package]]
