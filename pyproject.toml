@@ -21,8 +21,6 @@ whitenoise = {extras = ["brotli"], version = "^6.5.0"}
 gunicorn = "^21.2.0"
 
 
-[tool.poetry.group.dev.dependencies]
-black = "^23.1.0"
 
 [build-system]
 requires = ["poetry-core"]
