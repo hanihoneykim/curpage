@@ -1,12 +1,12 @@
 databases:
-  - name: curpage
+  - name: curpage-db
     databaseName: curpage
     user: curpage
     region: singapore
 
 services:
   - type: web
-    name: curpage
+    name: curpage-backend
     runtime: python
     region: singapore
     buildCommand: "./build.sh"

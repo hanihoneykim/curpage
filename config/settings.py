@@ -182,13 +182,15 @@ if DEBUG:
 else:
     CORS_ALLOWED_ORIGINS = ["https://curpage-frontend.onrender.com"]
     CSRF_TRUSTED_ORIGINS = ["https://curpage-frontend.onrender.com"]
-
+    # 실제 쓰는 도메인으로 작성해야함
 
 CORS_ALLOW_CREDENTIALS = True
 
 GH_SECRET = env("GH_SECRET")
 
 if not DEBUG:
+    SESSION_COOKIE_DOMAIN = ".curpage.xyz"
+    CSRF_COOKIE_DOMAIN = ".curpage.xyz"
     sentry_sdk.init(
         dsn="https://9b0b6066cbb0073b631b87082a18726a@o4505929182543872.ingest.sentry.io/4505929200304128",
         integrations=[DjangoIntegration()],
