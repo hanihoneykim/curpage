@@ -194,7 +194,7 @@ class KakaoLogIn(APIView):
                 data={
                     "grant_type": "authorization_code",
                     "client_id": "5bbe0f55441d7daeaf252ad8a81a2c36",
-                    "redirect_uri": "http://127.0.0.1:3000/social/kakao",
+                    "redirect_uri": "https://curpage.xyz/social/kakao",
                     "code": code,
                 },
             )
