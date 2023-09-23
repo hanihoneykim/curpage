@@ -188,6 +188,48 @@ socks = ["PySocks (>=1.5.6,!=1.5.7)"]
 use_chardet_on_py3 = ["chardet (>=3.0.2,<6)"]
 
 [[package]]
+name = "sentry-sdk"
+version = "1.31.0"
+description = "Python client for Sentry (https://sentry.io)"
+category = "main"
+optional = false
+python-versions = "*"
+
+[package.dependencies]
+certifi = "*"
+urllib3 = {version = ">=1.26.11", markers = "python_version >= \"3.6\""}
+
+[package.extras]
+aiohttp = ["aiohttp (>=3.5)"]
+arq = ["arq (>=0.23)"]
+asyncpg = ["asyncpg (>=0.23)"]
+beam = ["apache-beam (>=2.12)"]
+bottle = ["bottle (>=0.12.13)"]
+celery = ["celery (>=3)"]
+chalice = ["chalice (>=1.16.0)"]
+clickhouse-driver = ["clickhouse-driver (>=0.2.0)"]
+django = ["django (>=1.8)"]
+falcon = ["falcon (>=1.4)"]
+fastapi = ["fastapi (>=0.79.0)"]
+flask = ["blinker (>=1.1)", "flask (>=0.11)", "markupsafe"]
+grpcio = ["grpcio (>=1.21.1)"]
+httpx = ["httpx (>=0.16.0)"]
+huey = ["huey (>=2)"]
+loguru = ["loguru (>=0.5)"]
+opentelemetry = ["opentelemetry-distro (>=0.35b0)"]
+opentelemetry-experimental = ["opentelemetry-distro (>=0.40b0,<1.0)", "opentelemetry-instrumentation-aiohttp-client (>=0.40b0,<1.0)", "opentelemetry-instrumentation-django (>=0.40b0,<1.0)", "opentelemetry-instrumentation-fastapi (>=0.40b0,<1.0)", "opentelemetry-instrumentation-flask (>=0.40b0,<1.0)", "opentelemetry-instrumentation-requests (>=0.40b0,<1.0)", "opentelemetry-instrumentation-sqlite3 (>=0.40b0,<1.0)", "opentelemetry-instrumentation-urllib (>=0.40b0,<1.0)"]
+pure_eval = ["asttokens", "executing", "pure-eval"]
+pymongo = ["pymongo (>=3.1)"]
+pyspark = ["pyspark (>=2.4.4)"]
+quart = ["blinker (>=1.1)", "quart (>=0.16.1)"]
+rq = ["rq (>=0.6)"]
+sanic = ["sanic (>=0.8)"]
+sqlalchemy = ["sqlalchemy (>=1.2)"]
+starlette = ["starlette (>=0.19.1)"]
+starlite = ["starlite (>=1.48)"]
+tornado = ["tornado (>=5)"]
+
+[[package]]
 name = "sqlparse"
 version = "0.4.4"
 description = "A non-validating SQL parser."
@@ -247,7 +289,7 @@ brotli = ["Brotli"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.10"
-content-hash = "1b9cd548c1cca8de61a3f677ea2e6ea2a7a3ff278c7bb7bc185935019b6195ba"
+content-hash = "f106be2a6dd9015f09ee6246d998dbe603a05d95a46f442a1ab28a864714209a"
 
 [metadata.files]
 asgiref = [
@@ -529,6 +571,10 @@ pytz = [
 requests = [
     {file = "requests-2.31.0-py3-none-any.whl", hash = "sha256:58cd2187c01e70e6e26505bca751777aa9f2ee0b7f4300988b709f44e013003f"},
     {file = "requests-2.31.0.tar.gz", hash = "sha256:942c5a758f98d790eaed1a29cb6eefc7ffb0d1cf7af05c3d2791656dbd6ad1e1"},
+]
+sentry-sdk = [
+    {file = "sentry-sdk-1.31.0.tar.gz", hash = "sha256:6de2e88304873484207fed836388e422aeff000609b104c802749fd89d56ba5b"},
+    {file = "sentry_sdk-1.31.0-py2.py3-none-any.whl", hash = "sha256:64a7141005fb775b9db298a30de93e3b83e0ddd1232dc6f36eb38aebc1553291"},
 ]
 sqlparse = [
     {file = "sqlparse-0.4.4-py3-none-any.whl", hash = "sha256:5430a4fe2ac7d0f93e66f1efc6e1338a41884b7ddf2a350cedd20ccc4d9d28f3"},

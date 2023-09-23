@@ -165,3 +165,7 @@ class PhotoLikes(APIView):
         else:
             # 이미 좋아요가 취소된 경우
             return Response({"detail": "이미 좋아요를 취소했습니다."}, status=status.HTTP_400_BAD_REQUEST)
+
+
+def make_error(request):
+    division_by_zero = 1 / 0
