@@ -180,8 +180,8 @@ if DEBUG:
     CORS_ALLOWED_ORIGINS = ["http://127.0.0.1:3000"]
     CSRF_TRUSTED_ORIGINS = ["http://127.0.0.1:3000"]
 else:
-    CORS_ALLOWED_ORIGINS = ["https://curpage-frontend.onrender.com"]
-    CSRF_TRUSTED_ORIGINS = ["https://curpage-frontend.onrender.com"]
+    CORS_ALLOWED_ORIGINS = ["https://curpage.xyz"]
+    CSRF_TRUSTED_ORIGINS = ["https://curpage.xyz"]
     # 실제 쓰는 도메인으로 작성해야함
 
 CORS_ALLOW_CREDENTIALS = True
