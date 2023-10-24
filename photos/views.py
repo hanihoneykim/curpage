@@ -138,7 +138,7 @@ class PhotoLikes(APIView):
             defaults={"like": True},
         )
         if not created:
-            # 이미 좋아요를 누른 경우
+            # 이미 좋아요를 누른 경우.
             return Response({"detail": "이미 좋아요를 눌렀습니다."}, status=HTTP_400_BAD_REQUEST)
 
         # 서버 응답에 업데이트된 좋아요 카운트와 is_like 값을 포함
