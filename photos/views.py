@@ -1,7 +1,6 @@
 from rest_framework.views import APIView
+from django.conf import settings
 from rest_framework.response import Response
-import os
-import boto3
 from .models import Photo
 from tags.models import Tag
 from comments.models import Like
@@ -16,6 +15,7 @@ from rest_framework.status import (
 )
 from rest_framework.exceptions import NotFound, NotAuthenticated, ParseError, PermissionDenied
 from rest_framework.generics import RetrieveAPIView
+import requests
 
 
 class PhotoList(APIView):
@@ -89,7 +89,7 @@ class PhotoDetail(APIView):
             for tag_name in tag_list:
                 if not tag_name:
                     continue
-                # 기존 태그를 모두 삭제합니다.
+                # 기존 태그를 모두 삭제합니다
                 photo.tags.clear()
                 tag_obj, created = Tag.objects.get_or_create(name=tag_name)
                 if created:
@@ -174,17 +174,12 @@ class PhotoLikes(APIView):
             return Response({"detail": "이미 좋아요를 취소했습니다."}, status=HTTP_400_BAD_REQUEST)
 
 
-class FileView(APIView):
-    s3_client = boto3.client(
-        "s3",
-        aws_access_key_id=os.getenv("AWS_ACCESS_KEY"),
-        aws_secret_access_key=os.getenv("AWS_SECRET_ACCESS_KEY"),
-    )
-
-    def post(self, request):
-        file = request.FILES["filename"]
-
-        self.s3_client.upload_fileobj(
-            file, "curpage", file.name, ExtraArgs={"ContentType": file.content_type}
+class GetUploadURL(APIView):
+    def post(self):
+        url = (
+            f"https://api.cloudflare.com/client/v4/accounts{settings.CF_ID}/images/v2/direct_upload"
         )
-        return Response(status=HTTP_200_OK)
+        one_time_url = requests.post(url, headers={"Authorization": f"Bearer {settings.CF_TOKEN}"})
+        one_time_url = one_time_url.json()
+        result = one_time_url("result")
+        return Response({"uploadURL": result.get("uploadURL")})

@@ -3,6 +3,7 @@ from . import views
 
 urlpatterns = [
     path("", views.PhotoList.as_view()),
+    path("get-url", views.GetUploadURL.as_view()),
     path("<int:pk>", views.PhotoDetail.as_view()),
     path("<int:pk>/likes", views.PhotoLikes.as_view()),
 ]
