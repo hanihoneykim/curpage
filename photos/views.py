@@ -33,22 +33,9 @@ class PhotoList(APIView):
     def post(self, request):
         serializer = PhotoListSerializer(data=request.data)
         if serializer.is_valid():
-            tags_str = request.data.get("tags")
-            tag_list = [tag.strip() for tag in tags_str.split(",")]
-            tag_objects = []
-            for tag_name in tag_list:
-                if not tag_name:
-                    continue
-                tag_obj, created = Tag.objects.get_or_create(name=tag_name)
-                if created:
-                    tag_objects.append(tag_obj)
-                else:
-                    tag_objects.append(tag_obj)
-
             photo = serializer.save(
                 user=request.user,
             )
-            photo.tags.set(tag_objects)
             serializer = PhotoListSerializer(photo)
             return Response(serializer.data)
         else:
@@ -178,9 +165,10 @@ class S3Uploads(APIView):
     def post(self, request):
         try:
             photo = request.FILES.get("photo")
-            user = request.data.get("user")
             title = request.data.get("title")
             description = request.data.get("description")
+            user = request.user  # 사용자 정보를 현재 로그인한 사용자로 설정
+            tags = request.data.get("tags")
 
             s3r = boto3.resource(
                 "s3",
@@ -200,6 +188,19 @@ class S3Uploads(APIView):
                 user=user,
                 image_url=image_url,
             )
+
+            if tags:
+                tag_list = [tag.strip() for tag in tags.split(",")]
+                tag_objects = []
+                for tag_name in tag_list:
+                    if not tag_name:
+                        continue
+                    tag_obj, created = Tag.objects.get_or_create(name=tag_name)
+                    if created:
+                        tag_objects.append(tag_obj)
+                    else:
+                        tag_objects.append(tag_obj)
+                photo.tags.set(tag_objects)
 
             # 처리 완료 후 응답
             return Response({"MESSAGE": "SUCCESS"}, status=HTTP_200_OK)
