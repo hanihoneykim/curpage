@@ -10,7 +10,7 @@ class Photo(CommonModel):
         default="",
         verbose_name="제목",
     )
-    photo = models.FileField(
+    photo = models.URLField(
         null=True,
         default="",
         verbose_name="사진파일",
