@@ -196,7 +196,11 @@ class S3Uploads(APIView):
             image_url = f"{settings.AWS_S3_CUSTOM_DOMAIN}/{key}"
 
             photo = Photo.objects.create(
-                title=title, description=description, user=user, image_url=image_url
+                title=title,
+                description=description,
+                user=user,
+                image_url=image_url,
+                tags=tags,
             )
 
             # 처리 완료 후 응답

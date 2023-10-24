@@ -1,5 +1,6 @@
 from django.db import models
 from common.models import CommonModel
+from django.conf import settings
 
 
 class Photo(CommonModel):
@@ -11,7 +12,7 @@ class Photo(CommonModel):
         verbose_name="제목",
     )
     photo = models.FileField(
-        max_length=300,
+        upload_to="photos/",
         null=True,
         default="",
         verbose_name="사진파일",
@@ -33,9 +34,17 @@ class Photo(CommonModel):
         verbose_name="태그",
         related_name="photos",
     )
+    image_url = models.URLField(blank=True)
 
     class Meta:
         ordering = ["-created_at"]
 
     def __str__(self):
         return self.title
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+
+        # S3 버킷 내의 업로드 경로와 파일 이름을 기반으로 URL을 설정
+        self.image_url = f"{settings.AWS_S3_CUSTOM_DOMAIN}/photos/{self.photo.name}"
+        self.save(update_fields=["image_url"])
