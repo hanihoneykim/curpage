@@ -172,14 +172,3 @@ class PhotoLikes(APIView):
         else:
             # 이미 좋아요가 취소된 경우
             return Response({"detail": "이미 좋아요를 취소했습니다."}, status=HTTP_400_BAD_REQUEST)
-
-
-class GetUploadURL(APIView):
-    def post(self):
-        url = (
-            f"https://api.cloudflare.com/client/v4/accounts{settings.CF_ID}/images/v2/direct_upload"
-        )
-        one_time_url = requests.post(url, headers={"Authorization": f"Bearer {settings.CF_TOKEN}"})
-        one_time_url = one_time_url.json()
-        result = one_time_url("result")
-        return Response({"uploadURL": result.get("uploadURL")})

@@ -20,6 +20,8 @@ psycopg2-binary = "^2.9.7"
 whitenoise = {extras = ["brotli"], version = "^6.5.0"}
 gunicorn = "^21.2.0"
 sentry-sdk = "^1.31.0"
+boto3 = "^1.28.69"
+django-storages = "^1.14.2"
 
 
 
