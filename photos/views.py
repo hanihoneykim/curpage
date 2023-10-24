@@ -147,7 +147,7 @@ class PhotoLikes(APIView):
             {
                 "count_likes": photo.likes.filter(like=True).count(),
                 "is_like": True,
-                # 기타 필요한 데이터도 반환할 수 있음
+                # 기타 필요한 데이터도 반환할 수 있음.
             }
         )
 
