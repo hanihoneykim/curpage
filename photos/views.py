@@ -187,5 +187,4 @@ class FileView(APIView):
         self.s3_client.upload_fileobj(
             file, "curpage", file.name, ExtraArgs={"ContentType": file.content_type}
         )
-
         return Response(status=HTTP_200_OK)
