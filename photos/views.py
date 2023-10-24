@@ -1,12 +1,19 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
+import os
+import boto3
 from .models import Photo
 from tags.models import Tag
 from comments.models import Like
 from comments.serializers import LikeSerializer
 from .serializers import PhotoListSerializer, PhotoDetailSerializer
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
-from rest_framework.status import HTTP_204_NO_CONTENT, HTTP_400_BAD_REQUEST
+from rest_framework.status import (
+    HTTP_204_NO_CONTENT,
+    HTTP_400_BAD_REQUEST,
+    HTTP_403_FORBIDDEN,
+    HTTP_200_OK,
+)
 from rest_framework.exceptions import NotFound, NotAuthenticated, ParseError, PermissionDenied
 from rest_framework.generics import RetrieveAPIView
 
@@ -161,11 +168,24 @@ class PhotoLikes(APIView):
                 )
             else:
                 # 현재 사용자와 좋아요를 누른 사용자가 다른 경우
-                return Response({"detail": "삭제 권한이 없습니다."}, status=status.HTTP_403_FORBIDDEN)
+                return Response({"detail": "삭제 권한이 없습니다."}, status=HTTP_403_FORBIDDEN)
         else:
             # 이미 좋아요가 취소된 경우
-            return Response({"detail": "이미 좋아요를 취소했습니다."}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"detail": "이미 좋아요를 취소했습니다."}, status=HTTP_400_BAD_REQUEST)
 
 
-def make_error(request):
-    division_by_zero = 1 / 0
+class FileView(APIView):
+    s3_client = boto3.client(
+        "s3",
+        aws_access_key_id=os.getenv("AWS_ACCESS_KEY"),
+        aws_secret_access_key=os.getenv("AWS_SECRET_ACCESS_KEY"),
+    )
+
+    def post(self, request):
+        file = request.FILES["filename"]
+
+        self.s3_client.upload_fileobj(
+            file, "curpage", file.name, ExtraArgs={"ContentType": file.content_type}
+        )
+
+        return Response(status=HTTP_200_OK)
