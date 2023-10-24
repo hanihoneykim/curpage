@@ -8,7 +8,7 @@ class Text(CommonModel):
     """Model Definition for Texts"""
 
     title = models.CharField(
-        max_length=140,
+        max_length=225,
         default="",
         verbose_name="제목",
     )

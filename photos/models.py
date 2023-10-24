@@ -6,7 +6,7 @@ class Photo(CommonModel):
     """Model Definition for Photos"""
 
     title = models.CharField(
-        max_length=140,
+        max_length=225,
         default="",
         verbose_name="제목",
     )
