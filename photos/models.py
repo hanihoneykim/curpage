@@ -11,6 +11,7 @@ class Photo(CommonModel):
         verbose_name="제목",
     )
     photo = models.URLField(
+        max_length=500,
         null=True,
         default="",
         verbose_name="사진파일",
