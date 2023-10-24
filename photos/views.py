@@ -179,7 +179,6 @@ class S3Uploads(APIView):
         try:
             photo = request.FILES.get("photo")
             user = request.data.get("user")
-            tags = request.data.get("tags")
             title = request.data.get("title")
             description = request.data.get("description")
 
@@ -200,7 +199,6 @@ class S3Uploads(APIView):
                 description=description,
                 user=user,
                 image_url=image_url,
-                tags=tags,
             )
 
             # 처리 완료 후 응답
