@@ -11,6 +11,7 @@ class Photo(CommonModel):
         verbose_name="제목",
     )
     photo = models.FileField(
+        max_length=300,
         null=True,
         default="",
         verbose_name="사진파일",
