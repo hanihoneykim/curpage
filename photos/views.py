@@ -15,7 +15,7 @@ from rest_framework.status import (
 )
 from rest_framework.exceptions import NotFound, NotAuthenticated, ParseError, PermissionDenied
 from rest_framework.generics import RetrieveAPIView
-import requests
+import boto3
 
 
 class PhotoList(APIView):
@@ -172,3 +172,35 @@ class PhotoLikes(APIView):
         else:
             # 이미 좋아요가 취소된 경우
             return Response({"detail": "이미 좋아요를 취소했습니다."}, status=HTTP_400_BAD_REQUEST)
+
+
+class S3Uploads(APIView):
+    def post(self, request):
+        try:
+            photo = request.FILES.get("photo")
+            user = request.data.get("user")
+            tags = request.data.get("tags")
+            title = request.data.get("title")
+            description = request.data.get("description")
+
+            s3r = boto3.resource(
+                "s3",
+                aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
+                aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
+            )
+            key = "%s/%s" % (user, photo.name)
+
+            s3r.Bucket(settings.AWS_STORAGE_BUCKET_NAME).put_object(
+                Key=key, Body=photo, ContentType="image/jpeg"
+            )
+            image_url = f"{settings.AWS_S3_CUSTOM_DOMAIN}/{key}"
+
+            photo = Photo.objects.create(
+                title=title, description=description, user=user, image_url=image_url
+            )
+
+            # 처리 완료 후 응답
+            return Response({"MESSAGE": "SUCCESS"}, status=HTTP_200_OK)
+
+        except Exception as e:
+            return Response({"ERROR": str(e)}, status=HTTP_400_BAD_REQUEST)
