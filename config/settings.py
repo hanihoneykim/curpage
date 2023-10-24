@@ -52,7 +52,6 @@ if RENDER_EXTERNAL_HOSTNAME:
 THIRD_PARTY_APPS = [
     "rest_framework",
     "corsheaders",
-    "storages",
 ]
 
 CUSTOM_APPS = [
