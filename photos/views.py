@@ -174,6 +174,7 @@ class PhotoLikes(APIView):
             return Response({"detail": "이미 좋아요를 취소했습니다."}, status=HTTP_400_BAD_REQUEST)
 
 
+# cloudFlare post view
 class GetUploadURL(APIView):
     def post(self, request):
         url = f"https://api.cloudflare.com/client/v4/accounts/{settings.CF_ID}/images/v2/direct_upload"
