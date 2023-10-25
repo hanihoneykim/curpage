@@ -16,6 +16,7 @@ from rest_framework.status import (
 from rest_framework.exceptions import NotFound, NotAuthenticated, ParseError, PermissionDenied
 from rest_framework.generics import RetrieveAPIView
 import boto3
+import requests
 
 
 class PhotoList(APIView):
@@ -33,9 +34,21 @@ class PhotoList(APIView):
     def post(self, request):
         serializer = PhotoListSerializer(data=request.data)
         if serializer.is_valid():
+            tags_str = request.data.get("tags")
+            tag_list = [tag.strip() for tag in tags_str.split(",")]
+            tag_objects = []
+            for tag_name in tag_list:
+                if not tag_name:
+                    continue
+                tag_obj, created = Tag.objects.get_or_create(name=tag_name)
+                if created:
+                    tag_objects.append(tag_obj)
+                else:
+                    tag_objects.append(tag_obj)
             photo = serializer.save(
                 user=request.user,
             )
+            photo.tags.set(tag_objects)
             serializer = PhotoListSerializer(photo)
             return Response(serializer.data)
         else:
@@ -161,6 +174,20 @@ class PhotoLikes(APIView):
             return Response({"detail": "이미 좋아요를 취소했습니다."}, status=HTTP_400_BAD_REQUEST)
 
 
+class GetUploadURL(APIView):
+    def post(self, request):
+        url = f"https://api.cloudflare.com/client/v4/accounts/{settings.CF_ID}/images/v2/direct_upload"
+        one_time_url = requests.post(
+            url,
+            headers={
+                "Authorization": f"Bearer {settings.CF_TOKEN}",
+            },
+        )
+        one_time_url = one_time_url.json()
+        return Response(one_time_url)
+
+
+"""
 class S3Uploads(APIView):
     def post(self, request):
         try:
@@ -175,18 +202,18 @@ class S3Uploads(APIView):
                 aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
                 aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
             )
-            key = "%s/%s" % (user, photo.name)
+            key = "%s/%s" % (photo.name)
 
             s3r.Bucket(settings.AWS_STORAGE_BUCKET_NAME).put_object(
                 Key=key, Body=photo, ContentType="image/jpeg"
             )
-            image_url = f"{settings.AWS_S3_CUSTOM_DOMAIN}/{key}"
+            photo_url = f"{settings.AWS_S3_CUSTOM_DOMAIN}/{key}"
 
             photo = Photo.objects.create(
                 title=title,
                 description=description,
                 user=user,
-                image_url=image_url,
+                photo_url=photo_url,
             )
 
             if tags:
@@ -207,3 +234,4 @@ class S3Uploads(APIView):
 
         except Exception as e:
             return Response({"ERROR": str(e)}, status=HTTP_400_BAD_REQUEST)
+"""
