@@ -19,7 +19,6 @@ class PhotoListSerializer(ModelSerializer):
             "title",
             "user",
             "tags",
-            "photo_url",
         )
 
 
