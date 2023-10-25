@@ -33,7 +33,6 @@ class Photo(CommonModel):
         verbose_name="태그",
         related_name="photos",
     )
-    # photo_url = models.URLField(blank=True)
 
     class Meta:
         ordering = ["-created_at"]
